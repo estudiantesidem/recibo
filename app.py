@@ -1,20 +1,32 @@
 from flask import Flask, request, send_file
 import datetime
+import requests
 
 app = Flask(__name__)
 
-# Página con formulario
+def obtener_ciudad_por_ip(ip):
+    try:
+        respuesta = requests.get(f'https://ipinfo.io/{ip}/json')
+        if respuesta.status_code == 200:
+            data = respuesta.json()
+            return data.get('city', 'Ciudad desconocida')
+        else:
+            return 'Error en consulta IP'
+    except Exception as e:
+        return f'Error: {e}'
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        # Obtener IP real
         forwarded = request.headers.get('X-Forwarded-For', '')
         ip = forwarded.split(',')[0].strip() if forwarded else request.remote_addr
         ua = request.headers.get('User-Agent')
         msg = request.form.get('mensaje', '').strip()
         now = datetime.datetime.now().isoformat()
 
-        print(f"{now} - IP: {ip} - MENSAJE: {msg} - UA: {ua}")
+        ciudad = obtener_ciudad_por_ip(ip)
+
+        print(f"{now} - IP: {ip} - Ciudad: {ciudad} - MENSAJE: {msg} - UA: {ua}")
 
         return "<h2>✅ Gracias, tu mensaje ha sido enviado.</h2>"
 
@@ -26,12 +38,14 @@ def index():
         </form>
     """
 
-# Imagen rastreadora (opcional)
 @app.route('/recibo.jpeg')
 def tracker():
     forwarded = request.headers.get('X-Forwarded-For', '')
     ip = forwarded.split(',')[0].strip() if forwarded else request.remote_addr
     ua = request.headers.get('User-Agent')
     now = datetime.datetime.now().isoformat()
-    print(f"{now} - IP: {ip} - UA: {ua}")
+
+    ciudad = obtener_ciudad_por_ip(ip)
+
+    print(f"{now} - IP: {ip} - Ciudad: {ciudad} - UA: {ua}")
     return send_file("recibo.jpeg", mimetype="image/jpeg")
