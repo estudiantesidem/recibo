@@ -3,7 +3,7 @@ import datetime
 
 app = Flask(__name__)
 
-@app.route('/tracker.png')
+@app.route('/recibo.jpeg')
 def tracker():
     ip = request.remote_addr
     ua = request.headers.get('User-Agent')
@@ -14,4 +14,4 @@ def tracker():
         f.write(f"{now} - IP: {ip} - UA: {ua}\n")
 
     # Devolver la imagen
-    return send_file("tracker.png", mimetype="image/png")
+    return send_file("recibo.jpeg", mimetype="image/jpeg")
