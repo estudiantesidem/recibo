@@ -3,14 +3,22 @@ import datetime
 
 app = Flask(__name__)
 
+# Página principal que muestra la IP al visitante
+@app.route('/')
+def index():
+    forwarded = request.headers.get('X-Forwarded-For', '')
+    ip = forwarded.split(',')[0].strip() if forwarded else request.remote_addr
+    return f"""
+        <h2>👋 Hola, tu IP es: {ip}</h2>
+        <p>Tu visita ha sido registrada.</p>
+        <img src='/recibo.jpeg' width='1' height='1'>
+    """
+
+# Imagen rastreadora que captura IP + UA
 @app.route('/recibo.jpeg')
 def tracker():
-    # Obtener IP real, puede venir como 'ip1, ip2, ip3'
-    forwarded_for = request.headers.get('X-Forwarded-For', '')
-    if forwarded_for:
-        ip = forwarded_for.split(',')[0].strip()
-    else:
-        ip = request.remote_addr  # fallback
+    forwarded = request.headers.get('X-Forwarded-For', '')
+    ip = forwarded.split(',')[0].strip() if forwarded else request.remote_addr
 
     ua = request.headers.get('User-Agent')
     now = datetime.datetime.now().isoformat()
