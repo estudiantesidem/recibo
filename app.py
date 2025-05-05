@@ -19,7 +19,7 @@ def index():
         return "<h2>✅ Gracias, tu mensaje ha sido enviado.</h2>"
 
     return """
-        <h2>💬 Deja un mensaje para Mowa en su ANIVERSARIO</h2>
+        <h2>💬 Deja un mensaje </h2>
         <form method="POST">
             <textarea name="mensaje" rows="4" cols="40" placeholder="Escribe aquí..." required></textarea><br><br>
             <button type="submit">Enviar</button>
