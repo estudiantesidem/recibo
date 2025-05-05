@@ -3,7 +3,7 @@ import datetime
 
 app = Flask(__name__)
 
-# Página principal
+# Página con formulario
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -14,7 +14,7 @@ def index():
         msg = request.form.get('mensaje', '').strip()
         now = datetime.datetime.now().isoformat()
 
-        print(f"{now} - IP: {ip} 🙂 - MENSAJE: {msg} - UA: {ua}")
+        print(f"{now} - IP: {ip} - MENSAJE: {msg} - UA: {ua}")
 
         return "<h2>✅ Gracias, tu mensaje ha sido enviado.</h2>"
 
@@ -24,16 +24,15 @@ def index():
             <textarea name="mensaje" rows="4" cols="40" placeholder="Escribe aquí..." required></textarea><br><br>
             <button type="submit">Enviar</button>
         </form>
-        <!-- Imagen rastreadora -->
-        <img src="/recibo.jpeg" alt="recibo" width="1" height="1" style="display:none;">
     """
 
-# Imagen rastreadora
+# Imagen rastreadora (opcional) his
+
 @app.route('/recibo.jpeg')
 def tracker():
     forwarded = request.headers.get('X-Forwarded-For', '')
     ip = forwarded.split(',')[0].strip() if forwarded else request.remote_addr
     ua = request.headers.get('User-Agent')
     now = datetime.datetime.now().isoformat()
-    print(f"{now} - IP: {ip} 🙂 - UA: {ua}")
+    print(f"{now} - IP: {ip} - UA: {ua}")
     return send_file("recibo.jpeg", mimetype="image/jpeg")
